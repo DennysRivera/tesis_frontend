@@ -53,7 +53,7 @@ const chartData = ref({
   labels: timesToArray(props.device),
   datasets: [
     {
-      label: "Fotorresistencias",
+      label: props.device.id,
       backgroundColor: "#f87979",
       data: valuesToArray(props.device),
     },
