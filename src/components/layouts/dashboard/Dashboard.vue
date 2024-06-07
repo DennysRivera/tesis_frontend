@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
 import axios from "axios";
 import TarjetaInformativa from "@/components/layouts/dashboard/TarjetaInformativa.vue";
 import LineChart from "@/components/charts/LineChart.vue";
@@ -8,13 +8,15 @@ import ColumnChart from "@/components/charts/ColumnChart.vue";
 const dispositivos = ref([]);
 const intervalId = ref(null);
 const numerosAleatorios = ref([]);
+const graficosDisponibles = shallowRef([LineChart, ColumnChart]);
+let graficosAleatoriosNumeros = [];
 
 const obtenerDatos = async () => {
   let apiUrl = import.meta.env.VITE_API_URL;
   await axios
     .get(`${apiUrl}/dashboard`)
     .then((response) => {
-      console.log(response);
+      //console.log(response);
       dispositivos.value = response.data;
     })
     .catch((error) => {
@@ -32,9 +34,19 @@ const crearNumerosAleatorios = (cantidadDispositivos) => {
   return numerosAleatorios;
 };
 
+const crearGraficosAleatoriosNumeros = (cantidadDispositivos) => {
+  let numerosAleatorios = [];
+  for(let i = 0; i < cantidadDispositivos; i++){
+    numerosAleatorios.push(Math.floor(Math.random() * (cantidadDispositivos - 1)));
+  }
+  console.log(numerosAleatorios)
+  return numerosAleatorios;
+}
+
 onMounted(async () => {
   await obtenerDatos();
   numerosAleatorios.value = crearNumerosAleatorios(dispositivos.value.length);
+  graficosAleatoriosNumeros = crearGraficosAleatoriosNumeros(dispositivos.value.length);
   intervalId.value = setInterval(obtenerDatos, 60000);
 });
 
@@ -64,10 +76,9 @@ onBeforeUnmount(() => {
   </div>
 
   <div id="graficos-container">
-    <div v-for="dispositivo in dispositivos" class="grafico-div">
-    <LineChart :dispositivo="dispositivo" />
-    <ColumnChart :dispositivo="dispositivo" />
-  </div>
+    <div v-for="dispositivo,index in dispositivos" class="grafico-div">
+      <component :is="graficosDisponibles[graficosAleatoriosNumeros[index]]" :dispositivo="dispositivo" />
+    </div>
   </div>
 </template>
 
@@ -81,11 +92,11 @@ onBeforeUnmount(() => {
   background-color: blue;
 }
 
-#graficos-container{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+#graficos-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .grafico-div {
@@ -100,7 +111,7 @@ onBeforeUnmount(() => {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    background-color: blue;
+    background-color: red;
   }
 }
 </style>

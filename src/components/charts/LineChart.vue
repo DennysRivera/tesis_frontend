@@ -48,12 +48,12 @@ const series = ref([
 ]);
 
 function valoresEnArreglo(lecturas) {
-  console.log(lecturas);
+  //console.log(lecturas);
   let valuesArray = [];
   lecturas.forEach((lectura) => {
     valuesArray.push(lectura.lectura_valor);
   });
-  console.log("array", valuesArray);
+  //console.log("array", valuesArray);
   return valuesArray;
 }
 
