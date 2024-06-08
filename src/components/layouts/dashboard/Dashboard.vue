@@ -2,6 +2,7 @@
 import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
 import axios from "axios";
 import TarjetaInformativa from "@/components/layouts/dashboard/TarjetaInformativa.vue";
+import GraficoDetallado from "@/components/layouts/chartDetails/GraficoDetallado.vue";
 import LineChart from "@/components/charts/LineChart.vue";
 import ColumnChart from "@/components/charts/ColumnChart.vue";
 
@@ -36,17 +37,21 @@ const crearNumerosAleatorios = (cantidadDispositivos) => {
 
 const crearGraficosAleatoriosNumeros = (cantidadDispositivos) => {
   let numerosAleatorios = [];
-  for(let i = 0; i < cantidadDispositivos; i++){
-    numerosAleatorios.push(Math.floor(Math.random() * (cantidadDispositivos - 1)));
+  for (let i = 0; i < cantidadDispositivos; i++) {
+    numerosAleatorios.push(
+      Math.floor(Math.random() * (cantidadDispositivos - 1))
+    );
   }
-  console.log(numerosAleatorios)
+  console.log(numerosAleatorios);
   return numerosAleatorios;
-}
+};
 
 onMounted(async () => {
   await obtenerDatos();
   numerosAleatorios.value = crearNumerosAleatorios(dispositivos.value.length);
-  graficosAleatoriosNumeros = crearGraficosAleatoriosNumeros(dispositivos.value.length);
+  graficosAleatoriosNumeros = crearGraficosAleatoriosNumeros(
+    dispositivos.value.length
+  );
   intervalId.value = setInterval(obtenerDatos, 60000);
 });
 
@@ -76,8 +81,17 @@ onBeforeUnmount(() => {
   </div>
 
   <div id="graficos-container">
-    <div v-for="dispositivo,index in dispositivos" class="grafico-div">
-      <component :is="graficosDisponibles[graficosAleatoriosNumeros[index]]" :dispositivo="dispositivo" />
+    <div v-for="(dispositivo, index) in dispositivos" class="grafico-div">
+      <BButton
+        variant="outline-info"
+        size="sm"
+        :to="{ name: 'grafico-detallado', params: { dispositivoId: dispositivo.dispositivo_id } }"
+        >Más información</BButton
+      >
+      <component
+        :is="graficosDisponibles[graficosAleatoriosNumeros[index]]"
+        :dispositivo="dispositivo"
+      />
     </div>
   </div>
 </template>
