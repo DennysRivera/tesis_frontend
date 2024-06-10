@@ -21,11 +21,21 @@ const chartOptions = ref({
     width: 2,
   },
   title: {
-    text:
-      props.dispositivo.medicion.medicion_fenomeno +
-      " en " +
-      props.dispositivo.ubicacion.ubicacion_nombre,
+    text: props.dispositivo.medicion.medicion_fenomeno,
     align: "left",
+    margin: 0,
+    style: {
+      fontSize: "20px",
+      color: "black",
+    },
+  },
+  subtitle: {
+    text: `en ${props.dispositivo.ubicacion.ubicacion_nombre}`,
+    align: "left",
+    margin: 0,
+    style: {
+      fontSize: "15px",
+    },
   },
   grid: {
     row: {
@@ -35,6 +45,22 @@ const chartOptions = ref({
   },
   xaxis: {
     categories: tiemposEnArreglo(props.dispositivo.lecturasRecientes),
+    title: {
+      text: "Hora de medición",
+      style: {
+        fontSize: "15px",
+        color: "black",
+      },
+    },
+  },
+  yaxis: {
+    title: {
+      text: "Valor de la medición",
+      style: {
+        fontSize: "15px",
+        color: "black",
+      },
+    },
   },
 });
 
@@ -48,12 +74,10 @@ const series = ref([
 ]);
 
 function valoresEnArreglo(lecturas) {
-  //console.log(lecturas);
   let valuesArray = [];
   lecturas.forEach((lectura) => {
     valuesArray.push(lectura.lectura_valor);
   });
-  //console.log("array", valuesArray);
   return valuesArray;
 }
 

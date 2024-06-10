@@ -8,20 +8,17 @@ const props = defineProps({
 const chartOptions = ref({
   chart: {
     height: 350,
-    type: "bar",
-  },
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      columnWidth: "55%",
-      endingShape: "rounded",
+    type: "area",
+    zoom: {
+      enabled: true,
     },
   },
   dataLabels: {
     enabled: false,
   },
-  fill: {
-    opacity: 1,
+  stroke: {
+    curve: "straight",
+    width: 2,
   },
   title: {
     text: props.dispositivo.medicion.medicion_fenomeno,
@@ -38,6 +35,12 @@ const chartOptions = ref({
     margin: 0,
     style: {
       fontSize: "15px",
+    },
+  },
+  grid: {
+    row: {
+      colors: ["#f3f3f3", "transparent"],
+      opacity: 0.5,
     },
   },
   xaxis: {
@@ -71,25 +74,25 @@ const series = ref([
 ]);
 
 function valoresEnArreglo(lecturas) {
-  let arregloValores = [];
+  let valuesArray = [];
   lecturas.forEach((lectura) => {
-    arregloValores.push(lectura.lectura_valor);
+    valuesArray.push(lectura.lectura_valor);
   });
-  return arregloValores;
+  return valuesArray;
 }
 
 function tiemposEnArreglo(lecturas) {
-  let arregloTiempos = [];
+  let timesArray = [];
   lecturas.forEach((lectura) => {
-    arregloTiempos.push(lectura.createdAt.hora);
+    timesArray.push(lectura.createdAt.hora);
   });
-  return arregloTiempos;
+  return timesArray;
 }
 </script>
 
 <template>
   <apexchart
-    type="bar"
+    type="area"
     :options="chartOptions"
     :series="series"
     height="350"

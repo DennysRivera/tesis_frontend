@@ -2,26 +2,28 @@
 import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
 import axios from "axios";
 import TarjetaInformativa from "@/components/layouts/dashboard/TarjetaInformativa.vue";
-import GraficoDetallado from "@/components/layouts/chartDetails/GraficoDetallado.vue";
 import LineChart from "@/components/charts/LineChart.vue";
 import ColumnChart from "@/components/charts/ColumnChart.vue";
+import Area from "@/components/charts/Area.vue";
+import Barra from "@/components/charts/Barra.vue";
+import Alerta from "@/components/misc/Alerta.vue";
 
 const dispositivos = ref([]);
 const intervalId = ref(null);
 const numerosAleatorios = ref([]);
-const graficosDisponibles = shallowRef([LineChart, ColumnChart]);
+const graficosDisponibles = shallowRef([LineChart, ColumnChart, Area, Barra]);
 let graficosAleatoriosNumeros = [];
+const mostrarAlerta = ref(false);
 
 const obtenerDatos = async () => {
   let apiUrl = import.meta.env.VITE_API_URL;
   await axios
     .get(`${apiUrl}/dashboard`)
     .then((response) => {
-      //console.log(response);
       dispositivos.value = response.data;
     })
     .catch((error) => {
-      console.log(error);
+      mostrarAlerta.value = true;
     });
 };
 
@@ -39,10 +41,9 @@ const crearGraficosAleatoriosNumeros = (cantidadDispositivos) => {
   let numerosAleatorios = [];
   for (let i = 0; i < cantidadDispositivos; i++) {
     numerosAleatorios.push(
-      Math.floor(Math.random() * (cantidadDispositivos - 1))
+      Math.floor(Math.random() * graficosDisponibles.value.length)
     );
   }
-  console.log(numerosAleatorios);
   return numerosAleatorios;
 };
 
@@ -61,6 +62,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <Alerta v-model="mostrarAlerta" />
   <div id="tarjetas-informativas-div">
     <TarjetaInformativa
       titulo="Medidores registrados"
@@ -85,7 +87,10 @@ onBeforeUnmount(() => {
       <BButton
         variant="outline-info"
         size="sm"
-        :to="{ name: 'grafico-detallado', params: { dispositivoId: dispositivo.dispositivo_id } }"
+        :to="{
+          name: 'grafico-detallado',
+          params: { dispositivoId: dispositivo.dispositivo_id },
+        }"
         >Más información</BButton
       >
       <component

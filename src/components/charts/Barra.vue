@@ -12,9 +12,9 @@ const chartOptions = ref({
   },
   plotOptions: {
     bar: {
-      horizontal: false,
-      columnWidth: "55%",
-      endingShape: "rounded",
+      horizontal: true,
+      borderRadius: 4,
+      borderRadiusApplication: "end",
     },
   },
   dataLabels: {
