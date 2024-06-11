@@ -8,7 +8,7 @@ const props = defineProps({
 const chartOptions = ref({
   chart: {
     height: 350,
-    type: "area",
+    type: "line",
     zoom: {
       enabled: true,
     },
@@ -18,7 +18,7 @@ const chartOptions = ref({
   },
   stroke: {
     curve: "straight",
-    width: 2,
+    width: 4,
   },
   title: {
     text: props.dispositivo.medicion.medicion_fenomeno,
@@ -36,6 +36,9 @@ const chartOptions = ref({
     style: {
       fontSize: "15px",
     },
+  },
+  fill: {
+    opacity: [0.3, 1, 0.3]
   },
   grid: {
     row: {
@@ -62,16 +65,59 @@ const chartOptions = ref({
       },
     },
   },
+  tooltip: {
+    y: {
+      title: {
+        formatter: () =>
+          props.dispositivo.medicion.medicion_unidad_abreviatura
+            ? props.dispositivo.medicion.medicion_unidad_abreviatura
+            : props.dispositivo.medicion.medicion_unidad,
+      },
+    },
+  },
 });
 
-const series = ref([
-  {
-    name: props.dispositivo.medicion.medicion_unidad_abreviatura
-      ? props.dispositivo.medicion.medicion_unidad_abreviatura
-      : props.dispositivo.medicion.medicion_unidad,
-    data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
-  },
-]);
+const series = ref([]);
+if (!props.dispositivo.lecturasAnteriores) {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+      zIndex: 2
+    },
+    {
+      name: "Promedio actual",
+      data: promedioValores(props.dispositivo.lecturasRecientes),
+      color: "#0b6623",
+      zIndex: 3
+    },
+  ];
+} else {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      type: "area",
+      data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+      zIndex: 2
+    },
+    {
+      name: "Promedio actual",
+      type: "line",
+      data: promedioValores(props.dispositivo.lecturasRecientes),
+      color: "#0b6623",
+      zIndex: 3
+    },
+    {
+      name: "Mediciones 24 horas antes",
+      type: "area",
+      data: valoresEnArreglo(props.dispositivo.lecturasAnteriores),
+      color: "#ffa500",
+      zIndex: 0
+    },
+  ];
+}
 
 function valoresEnArreglo(lecturas) {
   let valuesArray = [];
@@ -88,11 +134,26 @@ function tiemposEnArreglo(lecturas) {
   });
   return timesArray;
 }
+
+function promedioValores(lecturas) {
+  let promedio = 0;
+  let promedioArreglo = [];
+  let valores = valoresEnArreglo(lecturas);
+  for (let i = 0; i < valores.length; i++) {
+    promedio += valores[i];
+  }
+  promedio = promedio / valores.length;
+  for (let i = 0; i < valores.length; i++) {
+    promedioArreglo.push(promedio);
+  }
+  console.log(promedio);
+  return promedioArreglo;
+}
 </script>
 
 <template>
   <apexchart
-    type="area"
+    type="line"
     :options="chartOptions"
     :series="series"
     height="350"

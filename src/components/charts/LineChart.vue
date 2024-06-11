@@ -18,7 +18,8 @@ const chartOptions = ref({
   },
   stroke: {
     curve: "smooth",
-    width: 2,
+    width: 4,
+    dashArray: [0, 0, 10],
   },
   title: {
     text: props.dispositivo.medicion.medicion_fenomeno,
@@ -62,16 +63,51 @@ const chartOptions = ref({
       },
     },
   },
+  tooltip: {
+    y: {
+      title: {
+        formatter: () =>
+          props.dispositivo.medicion.medicion_unidad_abreviatura
+            ? props.dispositivo.medicion.medicion_unidad_abreviatura
+            : props.dispositivo.medicion.medicion_unidad,
+      },
+    },
+  },
 });
 
-const series = ref([
-  {
-    name: props.dispositivo.medicion.medicion_unidad_abreviatura
-      ? props.dispositivo.medicion.medicion_unidad_abreviatura
-      : props.dispositivo.medicion.medicion_unidad,
-    data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
-  },
-]);
+const series = ref([]);
+if (!props.dispositivo.lecturasAnteriores) {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+    },
+    {
+      name: "Promedio actual",
+      data: promedioValores(props.dispositivo.lecturasRecientes),
+      color: "#0b6623",
+    },
+  ];
+} else {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+    },
+    {
+      name: "Promedio actual",
+      data: promedioValores(props.dispositivo.lecturasRecientes),
+      color: "#0b6623",
+    },
+    {
+      name: "Mediciones 24 horas antes",
+      data: valoresEnArreglo(props.dispositivo.lecturasAnteriores),
+      color: "#ffa500",
+    },
+  ];
+}
 
 function valoresEnArreglo(lecturas) {
   let valuesArray = [];
@@ -88,6 +124,21 @@ function tiemposEnArreglo(lecturas) {
   });
   return timesArray;
 }
+
+function promedioValores(lecturas) {
+  let promedio = 0;
+  let promedioArreglo = [];
+  let valores = valoresEnArreglo(lecturas);
+  for (let i = 0; i < valores.length; i++) {
+    promedio += valores[i];
+  }
+  promedio = promedio / valores.length;
+  for (let i = 0; i < valores.length; i++) {
+    promedioArreglo.push(promedio);
+  }
+  console.log(promedio);
+  return promedioArreglo;
+}
 </script>
 
 <template>
@@ -98,3 +149,13 @@ function tiemposEnArreglo(lecturas) {
     height="350"
   ></apexchart>
 </template>
+
+<style>
+.apexcharts-tooltip-y-group {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.apexcharts-tooltip-text-y-label {
+  margin-left: 5px;
+}
+</style>

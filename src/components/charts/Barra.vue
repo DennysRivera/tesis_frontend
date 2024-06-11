@@ -1,9 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { valoresEnArreglo } from "./funcionesGraficos.js";
 
 const props = defineProps({
   dispositivo: Object,
 });
+
+const promedio = ref(0);
+promedio.value = promedioValores(props.dispositivo.lecturasRecientes);
 
 const chartOptions = ref({
   chart: {
@@ -40,7 +44,7 @@ const chartOptions = ref({
       fontSize: "15px",
     },
   },
-  xaxis: {
+  /*xaxis: {
     categories: tiemposEnArreglo(props.dispositivo.lecturasRecientes),
     title: {
       text: "Hora de medición",
@@ -58,22 +62,65 @@ const chartOptions = ref({
         color: "black",
       },
     },
+  },*/
+  legend: {
+    customLegendItems: ["Mediciones recientes", "Mediciones 24 horas antes", "Promedio actual"],
+    markers: {
+      fillColors: ["#000080", "#ffa500", "#0b6623"]
+    }
+  },
+  tooltip: {
+    y: {
+      title: {
+        formatter: () =>
+          props.dispositivo.medicion.medicion_unidad_abreviatura
+            ? props.dispositivo.medicion.medicion_unidad_abreviatura
+            : props.dispositivo.medicion.medicion_unidad,
+      },
+    },
   },
 });
 
-const series = ref([
-  {
-    name: props.dispositivo.medicion.medicion_unidad_abreviatura
-      ? props.dispositivo.medicion.medicion_unidad_abreviatura
-      : props.dispositivo.medicion.medicion_unidad,
-    data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
-  },
-]);
+const series = ref([]);
+if (!props.dispositivo.lecturasAnteriores) {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArregloGoals(props.dispositivo.lecturasRecientes),
+      color: "#000080",
 
-function valoresEnArreglo(lecturas) {
+    },
+  ];
+} else {
+  series.value = [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArregloGoals(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+
+    },
+    {
+      name: "Mediciones 24 horas antes",
+      data: valoresEnArregloGoals(props.dispositivo.lecturasAnteriores),
+      color: "#ffa500",
+    },
+  ];
+}
+
+function valoresEnArregloGoals(lecturas) {
   let arregloValores = [];
   lecturas.forEach((lectura) => {
-    arregloValores.push(lectura.lectura_valor);
+    arregloValores.push({
+      x: lectura.createdAt.hora,
+      y: lectura.lectura_valor,
+      goals: [{
+        name: "Promedio actual",
+        value: promedio.value,
+        strokeWidth: 5,
+        strokeHeight: 10,
+        strokeColor: "#0b6623"
+      }]
+    });
   });
   return arregloValores;
 }
@@ -84,6 +131,17 @@ function tiemposEnArreglo(lecturas) {
     arregloTiempos.push(lectura.createdAt.hora);
   });
   return arregloTiempos;
+}
+
+function promedioValores(lecturas) {
+  let promedio = 0;
+  let valores = valoresEnArreglo(lecturas);
+  for (let i = 0; i < valores.length; i++) {
+    promedio += valores[i];
+  }
+  promedio = promedio / valores.length;
+
+  return promedio;
 }
 </script>
 
