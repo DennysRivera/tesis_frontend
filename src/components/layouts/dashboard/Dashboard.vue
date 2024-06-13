@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
       v-for="n in numerosAleatorios"
       :titulo="dispositivos[n].medicion.medicion_fenomeno"
       :ubicacion="dispositivos[n].ubicacion.ubicacion_nombre"
-      :valor="dispositivos[n].lecturasRecientes[0].lectura_valor"
+      :valor="dispositivos[n].lecturasRecientes[dispositivos[n].lecturasRecientes.length - 1].lectura_valor"
       :unidad="
         dispositivos[n].medicion.medicion_unidad_abreviatura
           ? dispositivos[n].medicion.medicion_unidad_abreviatura
