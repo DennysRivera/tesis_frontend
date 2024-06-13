@@ -1,7 +1,9 @@
 import { createMemoryHistory, createRouter } from "vue-router";
 
 import Dashboard from "./components/layouts/dashboard/Dashboard.vue";
+import MasInformacion from "./components/layouts/chartDetails/MasInformacion.vue";
 import GraficoDetallado from "./components/layouts/chartDetails/GraficoDetallado.vue";
+import Tabla from "./components/charts/Tabla.vue";
 
 const routes = [
     {
@@ -10,9 +12,21 @@ const routes = [
         component: Dashboard
     },
     {
-        path: "/grafico-detallado/:dispositivoId",
-        name: "grafico-detallado",
-        component: GraficoDetallado
+        path: "/informacion/:dispositivoId",
+        name: "mas-informacion",
+        component: MasInformacion,
+        children: [
+            {
+                path: "grafico",
+                name: "grafico-detallado",
+                component: GraficoDetallado
+            },
+            {
+                path: "tabla",
+                name: "tabla-historial",
+                component: Tabla
+            }
+        ]
     }
 ]
 

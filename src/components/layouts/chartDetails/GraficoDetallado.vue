@@ -9,11 +9,12 @@ import Columna from "../../charts/Columna.vue";
 import Area from "@/components/charts/Area.vue";
 import Barra from "@/components/charts/Barra.vue";
 import Alerta from "@/components/misc/Alerta.vue";
+import Tabla from "@/components/charts/Tabla.vue";
 
 const route = useRoute();
 const dispositivos = ref([]);
 const intervalId = ref(null);
-const graficosDisponibles = shallowRef([LineChart, Linea, ColumnChart, Columna, Area, Barra]);
+const graficosDisponibles = shallowRef([LineChart, Linea, ColumnChart, Columna, Area, Barra, Tabla]);
 const graficoActualNumero = ref(0);
 const show = ref(false);
 const mostrarAlerta = ref(false);
@@ -61,7 +62,7 @@ onBeforeUnmount(() => {
   </div>
   <div id="informacion-medida">
     <h2>Información sobre esta medición</h2>
-    <h3>{{ dispositivos[0].medicion.medicion_fenomeno }}</h3>
-    <p>{{ dispositivos[0].medicion.medicion_descripcion }}</p>
+    <h3>{{ dispositivos[0] ? dispositivos[0].medicion.medicion_fenomeno : "" }}</h3>
+    <p>{{ dispositivos[0] ? dispositivos[0].medicion.medicion_descripcion: "" }}</p>
   </div>
 </template>
