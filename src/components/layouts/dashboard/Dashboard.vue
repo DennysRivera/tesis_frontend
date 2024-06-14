@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
-import axios from "axios";
+import { axiosCliente } from "@/config/axios.js";
 import TarjetaInformativa from "@/components/layouts/dashboard/TarjetaInformativa.vue";
 import LineChart from "@/components/charts/LineChart.vue";
 import ColumnChart from "@/components/charts/ColumnChart.vue";
@@ -16,9 +16,8 @@ let graficosAleatoriosNumeros = [];
 const mostrarAlerta = ref(false);
 
 const obtenerDatos = async () => {
-  let apiUrl = import.meta.env.VITE_API_URL;
-  await axios
-    .get(`${apiUrl}/dashboard`)
+  await axiosCliente
+    .get("dashboard")
     .then((response) => {
       dispositivos.value = response.data;
     })

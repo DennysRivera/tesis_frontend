@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios";
+import { axiosCliente } from "@/config/axios.js";
 import LineChart from "../../charts/LineChart.vue";
 import Linea from "../../charts/Linea.vue";
 import ColumnChart from "../../charts/ColumnChart.vue";
@@ -20,9 +20,8 @@ const show = ref(false);
 const mostrarAlerta = ref(false);
 
 const obtenerDatos = async () => {
-  let apiUrl = import.meta.env.VITE_API_URL;
-  await axios
-    .get(`${apiUrl}/${route.params.dispositivoId}`)
+  await axiosCliente
+    .get(`${route.params.dispositivoId}`)
     .then((response) => {
       dispositivos.value = response.data;
     })

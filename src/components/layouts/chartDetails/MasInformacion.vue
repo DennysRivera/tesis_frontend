@@ -32,7 +32,7 @@ const tab = ref("grafico");
 
 <style scoped>
 #mas-informacion-div {
-  height: 100vh;
+  height: 90vh;
 }
 
 .botones-container {
