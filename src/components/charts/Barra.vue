@@ -37,7 +37,18 @@ const chartOptions = ref({
     },
   },
   subtitle: {
-    text: `en ${props.dispositivo.ubicacion.ubicacion_nombre}`,
+    text:
+      `en ${props.dispositivo.ubicacion.ubicacion_nombre} (` +
+      (props.dispositivo.lecturasRecientes[0].createdAt.fecha ==
+      props.dispositivo.lecturasRecientes[
+        props.dispositivo.lecturasRecientes.length - 1
+      ].createdAt.fecha
+        ? `${props.dispositivo.lecturasRecientes[0].createdAt.fecha})`
+        : `${props.dispositivo.lecturasRecientes[0].createdAt.fecha} - ${
+            props.dispositivo.lecturasRecientes[
+              props.dispositivo.lecturasRecientes.length - 1
+            ].createdAt.fecha
+          })`),
     align: "left",
     margin: 0,
     style: {

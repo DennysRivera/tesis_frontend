@@ -2,19 +2,16 @@
 import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { axiosCliente } from "@/config/axios.js";
-import LineChart from "../../charts/LineChart.vue";
 import Linea from "../../charts/Linea.vue";
-import ColumnChart from "../../charts/ColumnChart.vue";
 import Columna from "../../charts/Columna.vue";
 import Area from "@/components/charts/Area.vue";
 import Barra from "@/components/charts/Barra.vue";
 import Alerta from "@/components/misc/Alerta.vue";
-import Tabla from "@/components/charts/Tabla.vue";
 
 const route = useRoute();
 const dispositivos = ref([]);
 const intervalId = ref(null);
-const graficosDisponibles = shallowRef([LineChart, Linea, ColumnChart, Columna, Area, Barra, Tabla]);
+const graficosDisponibles = shallowRef([Linea, Columna, Area, Barra]);
 const graficoActualNumero = ref(0);
 const show = ref(false);
 const mostrarAlerta = ref(false);
@@ -24,9 +21,33 @@ const obtenerDatos = async () => {
     .get(`${route.params.dispositivoId}`)
     .then((response) => {
       dispositivos.value = response.data;
+      convertirFechaIso(dispositivos.value[0]);
     })
     .catch((error) => {
       mostrarAlerta.value = true;
+    });
+};
+
+const convertirFechaIso = (dispositivo) => {
+    dispositivo.lecturasRecientes.forEach((lectura) => {
+      lectura.createdAt = {
+        hora: new Date(lectura.createdAt).toLocaleTimeString(undefined, {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        fecha: new Date(lectura.createdAt).toLocaleDateString("es-SV"),
+      };
+    });
+    dispositivo.lecturasAnteriores.forEach((lectura) => {
+      lectura.createdAt = {
+        hora: new Date(lectura.createdAt).toLocaleTimeString(undefined, {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        fecha: new Date(lectura.createdAt).toLocaleDateString(),
+      };
     });
 };
 

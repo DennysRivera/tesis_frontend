@@ -25,7 +25,7 @@ function valoresEnArreglo(lecturas) {
     for (let i = 0; i < valores.length; i++) {
       promedioArreglo.push(promedio);
     }
-    console.log(promedio);
+
     return promedioArreglo;
   }
 

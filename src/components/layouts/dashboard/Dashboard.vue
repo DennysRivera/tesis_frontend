@@ -9,21 +9,45 @@ import Barra from "@/components/charts/Barra.vue";
 import Alerta from "@/components/misc/Alerta.vue";
 
 const dispositivos = ref([]);
-const intervalId = ref(null);
 const numerosAleatorios = ref([]);
 const graficosDisponibles = shallowRef([LineChart, ColumnChart, Area, Barra]);
 let graficosAleatoriosNumeros = [];
 const mostrarAlerta = ref(false);
 
 const obtenerDatos = async () => {
+  let fechaInicio = new Date(Date.now());
+  fechaInicio.setDate(fechaInicio.getDate() - 1);
+  fechaInicio = fechaInicio.toISOString().slice(0, 10);
+
   await axiosCliente
-    .get("dashboard")
+    .get("dashboard", {
+      params: {
+        fechaInicio,
+      },
+    })
     .then((response) => {
+    console.log(response.data)
       dispositivos.value = response.data;
+      convertirFechaIso(dispositivos.value);
     })
     .catch((error) => {
       mostrarAlerta.value = true;
     });
+};
+
+const convertirFechaIso = (dispositivos) => {
+  dispositivos.forEach((dispositivo) => {
+    dispositivo.lecturasRecientes.forEach((lectura) => {
+      lectura.createdAt = {
+        hora: new Date(lectura.createdAt).toLocaleTimeString(undefined, {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        fecha: new Date(lectura.createdAt).toLocaleDateString("es-SV"),
+      };
+    });
+  });
 };
 
 const crearNumerosAleatorios = (cantidadDispositivos) => {
@@ -52,11 +76,7 @@ onMounted(async () => {
   graficosAleatoriosNumeros = crearGraficosAleatoriosNumeros(
     dispositivos.value.length
   );
-  intervalId.value = setInterval(obtenerDatos, 60000);
-});
-
-onBeforeUnmount(() => {
-  clearInterval(intervalId.value);
+  
 });
 </script>
 
@@ -72,7 +92,11 @@ onBeforeUnmount(() => {
       v-for="n in numerosAleatorios"
       :titulo="dispositivos[n].medicion.medicion_fenomeno"
       :ubicacion="dispositivos[n].ubicacion.ubicacion_nombre"
-      :valor="dispositivos[n].lecturasRecientes[dispositivos[n].lecturasRecientes.length - 1].lectura_valor"
+      :valor="
+        dispositivos[n].lecturasRecientes[
+          dispositivos[n].lecturasRecientes.length - 1
+        ].lectura_valor
+      "
       :unidad="
         dispositivos[n].medicion.medicion_unidad_abreviatura
           ? dispositivos[n].medicion.medicion_unidad_abreviatura

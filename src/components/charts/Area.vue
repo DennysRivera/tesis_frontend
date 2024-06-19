@@ -30,7 +30,18 @@ const chartOptions = ref({
     },
   },
   subtitle: {
-    text: `en ${props.dispositivo.ubicacion.ubicacion_nombre}`,
+    text:
+      `en ${props.dispositivo.ubicacion.ubicacion_nombre} (` +
+      (props.dispositivo.lecturasRecientes[0].createdAt.fecha ==
+      props.dispositivo.lecturasRecientes[
+        props.dispositivo.lecturasRecientes.length - 1
+      ].createdAt.fecha
+        ? `${props.dispositivo.lecturasRecientes[0].createdAt.fecha})`
+        : `${props.dispositivo.lecturasRecientes[0].createdAt.fecha} - ${
+            props.dispositivo.lecturasRecientes[
+              props.dispositivo.lecturasRecientes.length - 1
+            ].createdAt.fecha
+          })`),
     align: "left",
     margin: 0,
     style: {
@@ -38,7 +49,7 @@ const chartOptions = ref({
     },
   },
   fill: {
-    opacity: [0.3, 1, 0.3]
+    opacity: [0.3, 1, 0.3],
   },
   grid: {
     row: {
@@ -84,13 +95,13 @@ if (!props.dispositivo.lecturasAnteriores) {
       name: "Mediciones recientes",
       data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
       color: "#000080",
-      zIndex: 2
+      zIndex: 2,
     },
     {
       name: "Promedio actual",
       data: promedioValores(props.dispositivo.lecturasRecientes),
       color: "#0b6623",
-      zIndex: 3
+      zIndex: 3,
     },
   ];
 } else {
@@ -100,21 +111,21 @@ if (!props.dispositivo.lecturasAnteriores) {
       type: "area",
       data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
       color: "#000080",
-      zIndex: 2
+      zIndex: 2,
     },
     {
       name: "Promedio actual",
       type: "line",
       data: promedioValores(props.dispositivo.lecturasRecientes),
       color: "#0b6623",
-      zIndex: 3
+      zIndex: 3,
     },
     {
       name: "Mediciones 24 horas antes",
       type: "area",
       data: valoresEnArreglo(props.dispositivo.lecturasAnteriores),
       color: "#ffa500",
-      zIndex: 0
+      zIndex: 0,
     },
   ];
 }
@@ -146,7 +157,7 @@ function promedioValores(lecturas) {
   for (let i = 0; i < valores.length; i++) {
     promedioArreglo.push(promedio);
   }
-  console.log(promedio);
+
   return promedioArreglo;
 }
 </script>

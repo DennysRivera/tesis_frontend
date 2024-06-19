@@ -19,7 +19,7 @@ const obtenerDatosFecha = () => {
   let fechaFin = new Date(fechas.fin || fechas.inicio);
   fechaFin.setDate(fechaFin.getDate() + 1);
   fechaFin = fechaFin.toISOString().slice(0, 10);
-  console.log(fechaFin);
+
   axiosCliente
     .get(`${route.params.dispositivoId}/tabla`, {
       params: {
@@ -46,7 +46,7 @@ function convertirFechaIso(lecturas) {
         hour: "2-digit",
         minute: "2-digit",
       }),
-      fecha: new Date(lectura.createdAt).toLocaleDateString(),
+      fecha: new Date(lectura.createdAt).toLocaleDateString("es-SV"),
     };
   });
 }
