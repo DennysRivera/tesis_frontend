@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onUpdated, ref } from "vue";
 import { valoresEnArreglo } from "./funcionesGraficos.js";
 
 const props = defineProps({
@@ -11,13 +11,14 @@ promedio.value = promedioValores(props.dispositivo.lecturasRecientes);
 
 const chartOptions = ref({
   chart: {
+    id: "realtime",
     height: 350,
     type: "bar",
   },
   plotOptions: {
     bar: {
       horizontal: true,
-      borderRadius: 4,
+      borderRadius: 2,
       borderRadiusApplication: "end",
     },
   },
@@ -75,10 +76,14 @@ const chartOptions = ref({
     },
   },*/
   legend: {
-    customLegendItems: ["Mediciones recientes", "Mediciones 24 horas antes", "Promedio actual"],
+    customLegendItems: [
+      "Mediciones recientes",
+      "Mediciones 24 horas antes",
+      "Promedio actual",
+    ],
     markers: {
-      fillColors: ["#000080", "#ffa500", "#0b6623"]
-    }
+      fillColors: ["#000080", "#ffa500", "#0b6623"],
+    },
   },
   tooltip: {
     y: {
@@ -99,7 +104,6 @@ if (!props.dispositivo.lecturasAnteriores) {
       name: "Mediciones recientes",
       data: valoresEnArregloGoals(props.dispositivo.lecturasRecientes),
       color: "#000080",
-
     },
   ];
 } else {
@@ -108,7 +112,6 @@ if (!props.dispositivo.lecturasAnteriores) {
       name: "Mediciones recientes",
       data: valoresEnArregloGoals(props.dispositivo.lecturasRecientes),
       color: "#000080",
-
     },
     {
       name: "Mediciones 24 horas antes",
@@ -124,13 +127,15 @@ function valoresEnArregloGoals(lecturas) {
     arregloValores.push({
       x: lectura.createdAt.hora,
       y: lectura.lectura_valor,
-      goals: [{
-        name: "Promedio actual",
-        value: promedio.value,
-        strokeWidth: 5,
-        strokeHeight: 10,
-        strokeColor: "#0b6623"
-      }]
+      goals: [
+        {
+          name: "Promedio actual",
+          value: promedio.value,
+          strokeWidth: 5,
+          strokeHeight: 10,
+          strokeColor: "#0b6623",
+        },
+      ],
     });
   });
   return arregloValores;
@@ -154,6 +159,21 @@ function promedioValores(lecturas) {
 
   return promedio;
 }
+
+onUpdated(() => {
+  ApexCharts.exec("realtime", "updateSeries", [
+    {
+      name: "Mediciones recientes",
+      data: valoresEnArregloGoals(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+    },
+    {
+      name: "Mediciones 24 horas antes",
+      data: valoresEnArregloGoals(props.dispositivo.lecturasAnteriores),
+      color: "#ffa500",
+    },
+  ]);
+});
 </script>
 
 <template>

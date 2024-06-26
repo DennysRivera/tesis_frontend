@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onUpdated, ref } from "vue";
 
 const props = defineProps({
   dispositivo: Object,
@@ -7,6 +7,7 @@ const props = defineProps({
 
 const chartOptions = ref({
   chart: {
+    id: "realtime",
     height: 350,
     type: "line",
     zoom: {
@@ -160,6 +161,32 @@ function promedioValores(lecturas) {
 
   return promedioArreglo;
 }
+
+onUpdated(() => {
+  ApexCharts.exec("realtime", "updateSeries", [
+    {
+      name: "Mediciones recientes",
+      type: "area",
+      data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
+      color: "#000080",
+      zIndex: 2,
+    },
+    {
+      name: "Promedio actual",
+      type: "line",
+      data: promedioValores(props.dispositivo.lecturasRecientes),
+      color: "#0b6623",
+      zIndex: 3,
+    },
+    {
+      name: "Mediciones 24 horas antes",
+      type: "area",
+      data: valoresEnArreglo(props.dispositivo.lecturasAnteriores),
+      color: "#ffa500",
+      zIndex: 0,
+    },
+  ]);
+});
 </script>
 
 <template>

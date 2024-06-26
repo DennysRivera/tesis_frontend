@@ -20,6 +20,7 @@ const obtenerDatos = async () => {
   await axiosCliente
     .get(`${route.params.dispositivoId}`)
     .then((response) => {
+      console.log(response.data)
       dispositivos.value = response.data;
       convertirFechaIso(dispositivos.value[0]);
     })
@@ -46,7 +47,7 @@ const convertirFechaIso = (dispositivo) => {
           hour: "2-digit",
           minute: "2-digit",
         }),
-        fecha: new Date(lectura.createdAt).toLocaleDateString(),
+        fecha: new Date(lectura.createdAt).toLocaleDateString("es-SV"),
       };
     });
 };

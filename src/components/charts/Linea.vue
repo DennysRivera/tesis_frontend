@@ -95,7 +95,7 @@ const chartOptions = ref({
 });
 
 const series = ref([
-  {
+  /*{
     name: "Mediciones recientes",
     data: valoresEnArreglo(props.dispositivo.lecturasRecientes),
     color: "#000080",
@@ -109,9 +109,9 @@ const series = ref([
     name: "Mediciones 24 horas antes",
     data: valoresEnArreglo(props.dispositivo.lecturasAnteriores),
     color: "#ffa500",
-  },
+  },*/
 ]);
-/*
+
 if (!props.dispositivo.lecturasAnteriores) {
   series.value = [
     {
@@ -144,7 +144,6 @@ if (!props.dispositivo.lecturasAnteriores) {
     },
   ];
 }
-*/
 
 function valoresEnArreglo(lecturas) {
   let valuesArray = [];

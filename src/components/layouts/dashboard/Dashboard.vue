@@ -1,16 +1,18 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref, shallowRef } from "vue";
+import { onMounted, ref, shallowRef } from "vue";
 import { axiosCliente } from "@/config/axios.js";
 import TarjetaInformativa from "@/components/layouts/dashboard/TarjetaInformativa.vue";
 import LineChart from "@/components/charts/LineChart.vue";
+import Linea from "@/components/charts/Linea.vue";
 import ColumnChart from "@/components/charts/ColumnChart.vue";
+import Columna from "@/components/charts/Columna.vue";
 import Area from "@/components/charts/Area.vue";
 import Barra from "@/components/charts/Barra.vue";
 import Alerta from "@/components/misc/Alerta.vue";
 
 const dispositivos = ref([]);
 const numerosAleatorios = ref([]);
-const graficosDisponibles = shallowRef([LineChart, ColumnChart, Area, Barra]);
+const graficosDisponibles = shallowRef([Area]);
 let graficosAleatoriosNumeros = [];
 const mostrarAlerta = ref(false);
 
