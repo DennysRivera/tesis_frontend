@@ -8,12 +8,66 @@
   font-weight: normal;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+header{
+  display: flex;
+  height: 15vh;
+  width: 100%;
+  background-color: #00449e;
+  align-items: center;
+}
+
+#logo-uca-div{
+  height: 100%;
+  margin-right: 15px;
+}
+
+.titulo-uca-div{
+  height: 70%;
+  display: flex;
+  align-items: end;
+}
+
+#logo-uca {
+  height: 100%;
+  width: auto;
+  max-height: 500px;
+}
+
+.titulo-uca{
+  display: inline-block;
+  margin: 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1em;
+  color: white;
+}
+
+footer {
+  height: 10vh;
+  width: auto;
+  background-color: #00449e;
+}
+
+footer .titulo-uca-div{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+footer .titulo-uca{
+  display: block;
+  width: 100%;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+#creacion{
+  display: block;
+  margin: 0;
+  font-size: 0.8rem;
+  color: white;
 }
 
 @media (hover: hover) {
@@ -23,11 +77,6 @@ a,
 }
 
 @media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center start;
-  }
-
   #app {
     display: flex;
     flex-direction: column;

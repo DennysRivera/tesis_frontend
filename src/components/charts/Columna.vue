@@ -1,4 +1,7 @@
 <script setup>
+// Configuración para gráfico de columnas estático y en tiempo real
+// Más información de configuraciones en
+// https://apexcharts.com/vue-chart-demos/column-charts/
 import { onUpdated, ref } from "vue";
 
 const props = defineProps({

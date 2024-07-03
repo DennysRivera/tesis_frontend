@@ -1,4 +1,7 @@
 <script setup>
+// Configuración para gráfico de líneas estático y en tiempo real
+// Más información de configuraciones en
+// https://apexcharts.com/vue-chart-demos/line-charts/
 import { onUpdated, ref } from "vue";
 
 const props = defineProps({
@@ -145,6 +148,7 @@ if (!props.dispositivo.lecturasAnteriores) {
   ];
 }
 
+// Función para colocar el valor de cada lectura en un arreglo
 function valoresEnArreglo(lecturas) {
   let valuesArray = [];
   lecturas.forEach((lectura) => {
@@ -153,6 +157,7 @@ function valoresEnArreglo(lecturas) {
   return valuesArray;
 }
 
+// Función para colocar la hora de cada lectura en un arreglo
 function tiemposEnArreglo(lecturas) {
   let timesArray = [];
   lecturas.forEach((lectura) => {
@@ -161,6 +166,8 @@ function tiemposEnArreglo(lecturas) {
   return timesArray;
 }
 
+// Función para obtener el promedio de los valores de las lecturas
+// y colocarlo en un arreglo
 function promedioValores(lecturas) {
   let promedio = 0;
   let promedioArreglo = [];
@@ -176,7 +183,10 @@ function promedioValores(lecturas) {
   return promedioArreglo;
 }
 
+// Hook de Vue. Usado para actualizar visualmente el gráfico
 onUpdated(() => {
+
+  // Se actualiza el gráfico con los nuevos valores
   ApexCharts.exec(
     "realtime",
     "updateSeries",
@@ -200,6 +210,7 @@ onUpdated(() => {
     true
   );
 
+    // Se actualiza la hora correspondiente a cada valor
   ApexCharts.exec(
     "realtime",
     "updateOptions",

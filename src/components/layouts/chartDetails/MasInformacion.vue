@@ -1,17 +1,20 @@
 <script setup>
 import { ref } from "vue";
-import GraficoDetallado from "./GraficoDetallado.vue";
-import Tabla from "../../charts/Tabla.vue";
 
+// Vista por defecto con que se renderiza
 const tab = ref("grafico");
 </script>
 
 <template>
   <div id="mas-informacion-div">
     <div class="botones-container">
+      <!-- "Botón" para regresar a la vista principal de dashboard -->
       <div class="btn-cerrar-div">
         <RouterLink variant="danger" class="btn-cerrar" :to="{ name: 'dashboard' }">X</RouterLink>
       </div>
+
+      <!-- Pestañas para cambiar entre la vista de gráfico y de tabla -->
+      <!-- Usa componentes dinámicos que renderizan un botón deshabilitado o un router-link -->
       <component
       :is="tab === 'grafico' ? 'button' : 'router-link'"
         :to="{ name: 'grafico-detallado' }"
